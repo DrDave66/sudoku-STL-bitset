@@ -10,14 +10,15 @@ Guess::Guess(RowCol _square, char _guess,SUDOKUTYPE _puzzle, SUDOKUTYPE _allowab
 Guess::Guess() {
     for(int16_t r = 0 ; r < 9 ; r++) {
         for(int16_t c = 0 ; c < 9 ; c++) {
-            puzzle[r][c] = "";
-            allowableValues[r][c] = "";
+            puzzle[r][c] = '\0';
+            allowableValues[r][c] = '\0';
         }
         
     }
 	square = RowCol();
 	guess = '\0';
 }
+
 Guess::Guess(const Guess& g) {
     puzzle = g.puzzle;
     allowableValues = g.allowableValues;

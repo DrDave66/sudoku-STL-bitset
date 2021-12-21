@@ -42,27 +42,18 @@ void printPuzzleText(Sudoku ss) {
 // Loaded 100000 	puzzles in 113.327293 msec, 1.133273 usec/puzzle
 // Loaded 1000000 	puzzles in 1011.960570 msec, 1.011961 usec/puzzle
 // Loaded 10000000 	puzzles in 10631.764658 msec, 1.063176 usec/puzzle
-
+array<uint8_t,9> ll = {0,1,2,3,4,5,6,7,8};
 #ifdef SHORTMAIN
 int main() {
-	string basename = "/Users/dave/code/GitHub/sudoku-puzzles/";
-	vector<string> fname;
-	fname.push_back("/Users/dave/code/GitHub/sudoku-puzzles/100P.txt");
-	fname.push_back("/Users/dave/code/GitHub/sudoku-puzzles/1000P.txt");
-	fname.push_back("/Users/dave/code/GitHub/sudoku-puzzles/10000P.txt");
-
-	for (string f : fname) {
-		cout << f << endl;
+	Sudoku s(solved1);
+	for(auto r:ll) {
+		for(auto c:ll) {
+			s.allowableValues[r][c].set();
+			s.puzzle[r][c].reset();
+			s.puzzle[r][c].set((r+c)%9);
+		}
 	}
-	Puzzles pf;
-	PrecisionTimeLapse ptl;
-	uint32_t numLoaded = 0;
-	for (string f : fname) {
-		ptl.start();
-		numLoaded = pf.loadFromFile(f);
-		ptl.stop();
-		printf("Loaded %d puzzles in %f msec, %f usec/puzzle\n",numLoaded, ptl.elapsed()*1000.0, ptl.elapsed()*1000000/numLoaded);
-	}
+	s.printPuzzle();
 
 }
 

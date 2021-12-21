@@ -1,3 +1,10 @@
 {
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "files.associations": {
+        "bitset": "cpp",
+        "array": "cpp",
+        "vector": "cpp",
+        "__tuple": "cpp",
+        "__tree": "cpp"
+    }
 }

@@ -29,7 +29,7 @@ public:
 	Sudoku(string puzzle);
 	void clearPuzzle();
 	void createVectors(void);
-	vector<string> crossProduct(string a, string b);
+	//vector<string> crossProduct(string a, string b);
     vector<RowCol> crossProductRC(vector<uint8_t>, vector<uint8_t>);
     
 	bool setPuzzle(string p);
@@ -59,6 +59,7 @@ public:
     static const uint8_t numCols = 9;
     vector<uint8_t> rows = {0,1,2,3,4,5,6,7,8};
     vector<uint8_t> cols = {0,1,2,3,4,5,6,7,8};
+	vector<uint8_t> bits = {0,1,2,3,4,5,6,7,8};
     
 	string digitsText = "123456789";
 

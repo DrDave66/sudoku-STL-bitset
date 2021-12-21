@@ -4,7 +4,8 @@
 
 #include <cstdint>
 #include <array>
+#include <bitset>
 
-typedef array<array<string, 9> ,9> SUDOKUTYPE;
+typedef array<array<bitset<9>, 9> ,9> SUDOKUTYPE;
 
 #endif // _SUDOKUTYPES_H
