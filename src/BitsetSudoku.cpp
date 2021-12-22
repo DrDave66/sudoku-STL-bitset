@@ -46,15 +46,30 @@ array<uint8_t,9> ll = {0,1,2,3,4,5,6,7,8};
 #ifdef SHORTMAIN
 int main() {
 	Sudoku s(solved1);
+	s.clearPuzzle();
+	s.printPuzzle();
+	s.printAllowableValues();
 	for(auto r:ll) {
 		for(auto c:ll) {
 			s.allowableValues[r][c].set();
 			s.puzzle[r][c].reset();
 			s.puzzle[r][c].set((r+c)%9);
 		}
+		s.printPuzzle();
+		s.printAllowableValues();
 	}
 	s.printPuzzle();
-
+	s.printAllowableValues();
+	bitset<9> a;
+	bitset<9> b;
+	a=511;
+	b=33;
+	bitset<9> c;
+	c = a ^ b;
+	
+	cout << a << endl;
+	cout << b << endl;
+	cout << c << endl;
 }
 
 #else

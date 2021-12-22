@@ -5,6 +5,7 @@
         "array": "cpp",
         "vector": "cpp",
         "__tuple": "cpp",
-        "__tree": "cpp"
+        "__tree": "cpp",
+        "iosfwd": "cpp"
     }
 }

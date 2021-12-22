@@ -7,7 +7,9 @@
 #include <vector>
 #include <set>
 #include <map>
-#include <iostream>
+#include <string>       // std::string
+#include <iostream>     // std::cout
+#include <sstream> 
 #include <limits>
 #include <iomanip>
 #include <algorithm>
@@ -29,13 +31,11 @@ public:
 	Sudoku(string puzzle);
 	void clearPuzzle();
 	void createVectors(void);
-	//vector<string> crossProduct(string a, string b);
-    vector<RowCol> crossProductRC(vector<uint8_t>, vector<uint8_t>);
     
 	bool setPuzzle(string p);
 	//bool setValue(string square, string value);
-    bool setValue(uint8_t row, uint8_t col, char value);
-    bool setValue(RowCol rc, char value);
+    bool setValue(uint8_t row, uint8_t col, uint8_t bit);
+    bool setValue(RowCol rc, uint8_t bit);
     
 	void printPuzzle(void);
 	void printPuzzle(string title);
@@ -57,9 +57,9 @@ public:
     
     static const uint8_t numRows = 9;
     static const uint8_t numCols = 9;
-    vector<uint8_t> rows = {0,1,2,3,4,5,6,7,8};
-    vector<uint8_t> cols = {0,1,2,3,4,5,6,7,8};
-	vector<uint8_t> bits = {0,1,2,3,4,5,6,7,8};
+    array<uint8_t,9> rows = {0,1,2,3,4,5,6,7,8};
+    array<uint8_t,9> cols = {0,1,2,3,4,5,6,7,8};
+	array<uint8_t,9> bits = {0,1,2,3,4,5,6,7,8};
     
 	string digitsText = "123456789";
 
@@ -76,5 +76,18 @@ public:
     Guess newGuess;
 
 };
-
+// crossProduct will take any two iterables
+template <class T, class U>
+vector<RowCol> crossProduct (T a, U b) {
+    static vector<RowCol> v;
+    v.clear();
+    RowCol rc;
+    for(uint8_t aa : a) {
+        for (uint8_t bb : b) {
+            rc.set(aa,bb);
+            v.push_back(rc);
+        }
+    }
+	return v;
+}
 #endif // _SUDOKU

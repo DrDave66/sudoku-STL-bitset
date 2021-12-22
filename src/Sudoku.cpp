@@ -1,6 +1,7 @@
 #include "Sudoku.h"
-#define NOTIMING
 
+#define NOTIMING
+#define noPRINTVECTORS
 Sudoku::Sudoku() {
 	createVectors();
 	clearPuzzle();
@@ -13,19 +14,19 @@ Sudoku::Sudoku(string puzzle) {
 	srand((uint32_t)time(NULL));
 }
 
-vector<RowCol> Sudoku::crossProductRC(vector<uint8_t> a, vector<uint8_t> b) {
-#define noPRINTCROSS
-    static vector<RowCol> v;
-    v.clear();
-    RowCol rc;
-    for(uint8_t aa : a) {
-        for (uint8_t bb : b) {
-            rc.set(aa,bb);
-            v.push_back(rc);
-        }
-    }
-    return v;
-}
+// vector<RowCol> Sudoku::crossProductRC(vector<uint8_t> a, vector<uint8_t> b) {
+// #define noPRINTCROSS
+//     static vector<RowCol> v;
+//     v.clear();
+//     RowCol rc;
+//     for(uint8_t aa : a) {
+//         for (uint8_t bb : b) {
+//             rc.set(aa,bb);
+//             v.push_back(rc);
+//         }
+//     }
+//     return v;
+// }
 
 void Sudoku::createVectors(void) {
 //	// create vector of squares
@@ -50,7 +51,7 @@ void Sudoku::createVectors(void) {
 	for (auto c : cols) {
         v1.clear();
         v1.push_back(c);
-		temp = crossProductRC(rows, v1);
+		temp = crossProduct(rows, v1);
         i = 0;
         for (RowCol s : temp) {
             rcUnitList[ul][i] = s;
@@ -62,7 +63,7 @@ void Sudoku::createVectors(void) {
 	for (auto r : rows) {
         v1.clear();
         v1.push_back(r);
-		temp = crossProductRC(v1, rows);
+		temp = crossProduct(v1, rows);
         i = 0;
         for (RowCol s : temp) {
             rcUnitList[ul][i] = s;
@@ -82,7 +83,7 @@ void Sudoku::createVectors(void) {
 	for (vector<uint8_t> r : sr) {
 		for (vector<uint8_t> c : sc) {
             i = 0;
-            temp = crossProductRC(r,c);
+            temp = crossProduct(r,c);
             for (RowCol s : temp) {
                 rcUnitList[ul][i] = s;
                 i++;
@@ -159,8 +160,11 @@ void Sudoku::createVectors(void) {
 #ifdef PRINTVECTORS
     for (auto r:rows) {
         for(auto c:cols) {
-            sq.set(r,c);
-            printPeers(sq);
+            cout << RowCol(r,c) << " - ";
+            for(RowCol p:rcPeers[r][c]) {
+                cout << p.toString() << " ";
+            }
+            cout << endl;
         }
     }
 #endif
@@ -191,35 +195,6 @@ bool Sudoku::setPuzzle(string p) {
 /**********************************************************
 **********   Printing Functions ***************************
 ***********************************************************/
-//string Sudoku::printableStringVector(vector<string> vec) {
-//	string s;
-//	for (string v : vec) {
-//		s += v;
-//		s += " ";
-//	}
-//	return s;
-//}
-
-//string Sudoku::printableStringSet(set<string> st) {
-//	string s;
-//	for (string v : st) {
-//		s += v;
-//		s += " ";
-//	}
-//	return s;
-//}
-
-//string Sudoku::printableVectorVectorString(vector<vector<string> > vvs) {
-//	string s;
-//	for (vector<string> vs : vvs) {
-//		for (string v : vs) {
-//			s += v;
-//			s += " ";
-//		}
-//		s += "\n";
-//	}
-//	return s;
-//}
 
 void Sudoku::printPuzzle(string title) {
 	cout << endl << title;
@@ -270,43 +245,52 @@ void Sudoku::printPuzzle(void) {
 }
 
 void Sudoku::printAllowableValues(void) {
-	// string header = "         1           2           3            4           5           6            7           8           9";
-	// string top = "  =================================================================================================================";
-	// string row_sep = "  || --------------------------------- || --------------------------------- || --------------------------------- ||";
-	// string col_sep = "||";
-	// string num_sep = "|";
-	// cout << endl << header << endl;
-	// cout << top << endl;
-	// uint32_t col_num = -1;
-	// uint32_t row_num = -1;
-	// string index;
-	// for (auto r : rows) {
-	// 	cout << (char)('A' + r) << " " << col_sep;
-	// 	for (auto c : cols) {
-	// 		if (puzzle[r][c] == "0") {
-	// 			cout << "  ";
-	// 		}
-	// 		else {
-	// 			cout << " " << setw(9) << allowableValues[r][c];
-	// 		}
-	// 		if (col_num > 0 && (col_num - 1) % 3 == 0) {
-	// 			cout << " " << col_sep;
-	// 		}
-	// 		else {
-	// 			cout << " " << num_sep;
-	// 		}
-	// 		col_num++;
-	// 	}
-	// 	row_num++;
-	// 	cout << endl;
-	// 	if (row_num == 8) {
-	// 		cout << top << endl;
-	// 	}
-	// 	else if ((row_num + 1) % 3 == 0) {
-	// 		cout << row_sep << endl;
-	// 	}
+	string header = "         1           2           3            4           5           6            7           8           9";
+	string top = "  =================================================================================================================";
+	string row_sep = "  || --------------------------------- || --------------------------------- || --------------------------------- ||";
+	string col_sep = "||";
+	string num_sep = "|";
+	cout << endl << header << endl;
+	cout << top << endl;
+	uint32_t col_num = -1;
+	uint32_t row_num = -1;
+	string outstr;
+	for (auto r : rows) {
+		cout << (char)('A' + r) << " " << col_sep;
+		for (auto c : cols) {
+			if (puzzle[r][c].any()) {
+				outstr = " ";
+			}
+			else {
+                stringstream ss;
+                for(auto b:bits) {
+                    if(allowableValues[r][c].test(b)) {
+                        ss << int(b+1);
+                    }
+                }
+                outstr = ss.str();
+			}
+            cout << setw(10);
+            cout <<  outstr;
+            cout << setw(1);
+			if (col_num > 0 && (col_num - 1) % 3 == 0) {
+				cout << " " << col_sep;
+			}
+			else {
+				cout << " " << num_sep;
+			}
+			col_num++;
+		}
+		row_num++;
+		cout << endl;
+		if (row_num == 8) {
+			cout << top << endl;
+		}
+		else if ((row_num + 1) % 3 == 0) {
+			cout << row_sep << endl;
+		}
 
-	// }
+	}
 }
 
 void Sudoku::printAllowableValues(string title) {
@@ -318,7 +302,7 @@ void Sudoku::printAllowableValues(string title) {
  **********   Solving Functions ***************************
 ***********************************************************/
 
-bool Sudoku::setValue(uint8_t r, uint8_t c, char value) {
+bool Sudoku::setValue(uint8_t r, uint8_t c, uint8_t bit) {
 #ifdef TIMING
 	PrecisionTimeLapse ptl;
 	ptl.start();
@@ -348,8 +332,8 @@ bool Sudoku::setValue(uint8_t r, uint8_t c, char value) {
 	return true;
 }
 
-bool Sudoku::setValue(RowCol rc, char value) {
-    return setValue(rc.row, rc.col, value);
+bool Sudoku::setValue(RowCol rc, uint8_t bit) {
+    return setValue(rc.row, rc.col, bit);
 }
 
 bool Sudoku::solveOnes(void) {
