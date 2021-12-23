@@ -5,8 +5,11 @@
 #include <chrono>
 #include <string>
 
-using namespace std;
-using namespace std::chrono; 
+using std::string;
+using std::chrono::high_resolution_clock; 
+using std::chrono::duration_cast;
+using std::chrono::duration;
+
 
 enum TIME_UNIT {
 	SEC = 1, 

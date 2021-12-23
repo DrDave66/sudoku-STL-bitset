@@ -4,7 +4,9 @@
 
 #include <string>
 #include <cstring>
-using namespace std;
+
+using std::string;
+
 #include "RowCol.h"
 #include "SudokuTypes.h"
 

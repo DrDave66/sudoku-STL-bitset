@@ -34,7 +34,10 @@ void Sudoku::createVectors(void) {
     
 	uint8_t i;
     vector<RowCol> rcv;
-
+    for(auto b:bits) {
+        bitMask[b].reset();
+        bitMask[b].set(b);
+    }
     for (auto r:rows) {
         for (auto c:cols) {
             puzzle[r][c].reset();
@@ -180,13 +183,20 @@ void Sudoku::clearPuzzle(void) {
 }
 
 bool Sudoku::setPuzzle(string p) {
+    char v;
+    uint8_t b;
     if(p.size() < 81)
         return false;
     clearPuzzle();
+
     for(auto r:rows) {
         for(auto c:cols) {
-            //RowCol rc(r,c);
-            setValue(r,c,p[c+ r*9]);
+            v = p[c + r*9];
+            if (v == '.')
+                b = 10;
+            else
+                b = (v - '1') ;
+            setValue(r,c,b);
         }
     }
 	return true;
@@ -302,29 +312,34 @@ void Sudoku::printAllowableValues(string title) {
  **********   Solving Functions ***************************
 ***********************************************************/
 
-bool Sudoku::setValue(uint8_t r, uint8_t c, uint8_t bit) {
+bool Sudoku::setValue(uint8_t r, uint8_t c, uint8_t bb) {
 #ifdef TIMING
 	PrecisionTimeLapse ptl;
 	ptl.start();
 #endif 	
-//     size_t t;
-// 	uint8_t rr,cc;
-//     if (value == '.' || value == '0') {
-//         puzzle[r][c] = value;
-//         return true;
-//     } else {
-//         if (allowableValues[r][c].find(value) == string::npos)
-//             return false;
-//         allowableValues[r][c] = "";
-//         puzzle[r][c] = value;
-//     }
-// 	for (RowCol p : rcPeers[r][c]) {
-//         rr = p.row;
-//         cc = p.col;
-//         t = allowableValues[rr][cc].find(value);
-// 		if (t != string::npos)
-// 			allowableValues[rr][cc].replace(t, 1, "");
-//     }
+    RowCol rc(r,c);
+    cout << rc.toString() << " " << uint(bb+1) << endl;
+    size_t t;
+	uint8_t rr,cc;
+    bitset<9> temp;
+    if (bb == 10) {
+        puzzle[r][c].reset();
+        return true;
+    } else {
+        temp = allowableValues[r][c] & bitMask[bb];
+        if( temp.any() == false) {
+            return false;
+        }
+        allowableValues[r][c] = 0;
+        puzzle[r][c] = bitMask[bb];
+    }
+	for (RowCol p : rcPeers[r][c]) {
+//        cout << p.toString() << " ";
+        rr = p.row;
+        cc = p.col;
+        allowableValues[rr][cc].reset(bb);
+    }
+//    cout << endl;
 // #ifdef TIMING
 // 	ptl.stop();
 // 	cout << "setValue," << ptl.elapsedString() << endl;
@@ -337,50 +352,49 @@ bool Sudoku::setValue(RowCol rc, uint8_t bit) {
 }
 
 bool Sudoku::solveOnes(void) {
-// #ifdef TIMING	
-// 	PrecisionTimeLapse ptl;
-// 	ptl.start();
-// #endif	
+#ifdef TIMING	
+	PrecisionTimeLapse ptl;
+	ptl.start();
+#endif	
  	bool solvedSome = true;
-//     string allValues;
-//     allValues.resize(81*10);
-// 	while (solvedSome == true ) {
-// 		solvedSome = false;
-// 		// find squares with only one available value
-//         for (auto r:rows){
-//             for (auto c:cols) {
-//                 if (allowableValues[r][c].size() == 1) {
-//                     // and set the value
-//                     solvedSome = true;
-//                     setValue(r, c, allowableValues[r][c][0]);
-//                 }
-//             }
-//         }
-// 		// look through all units and see if any value appears only one time
-//         for(array<RowCol,9> ul : rcUnitList) {
-//             allValues.clear();
-// 			for (RowCol rc : ul) {
-//                 allValues += allowableValues[rc.row][rc.col];;
-// 			}
-// 			for (char d : digitsText) {
-// 				// if number appears once
-// 				if (count(allValues.begin(), allValues.end(), d) == 1) {
-// 					// find the square with the value in it
-// 					for (RowCol u : ul) {
-// 						if (count(allowableValues[u.row][u.col].begin(), allowableValues[u.row][u.col].end(), d) == 1) {
-// 							solvedSome = true;
-// 							setValue(u, d);
-//                           break;
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// #ifdef TIMING
-// 	ptl.stop();
-// 	cout << "solveOnes,"  << ptl.elapsedString() << endl;
-// #endif
+    bitset<9> temp = 0;
+	while (solvedSome == true ) {
+		solvedSome = false;
+		// find squares with only one available value
+        for (auto r:rows){
+            for (auto c:cols) {
+                if (numberOfBitsSet(allowableValues[r][c]) == 1) {
+                    // and set the value
+                    solvedSome = true;
+                    setValue(r, c, singleBitSet(allowableValues[r][c]));
+                }
+            }
+        }
+		// // look through all units and see if any value appears only one time
+        // for(array<RowCol,9> ul : rcUnitList) {
+        //     temp.reset();
+		// 	for (RowCol rc : ul) {
+        //         temp ^= allowableValues[rc.row][rc.col];
+		// 	}
+		// 	for (char d : digitsText) {
+		// 		// if number appears once
+		// 		if (count(allValues.begin(), allValues.end(), d) == 1) {
+		// 			// find the square with the value in it
+		// 			for (RowCol u : ul) {
+		// 				if (count(allowableValues[u.row][u.col].begin(), allowableValues[u.row][u.col].end(), d) == 1) {
+		// 					solvedSome = true;
+		// 					setValue(u, d);
+        //                   break;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+	}
+#ifdef TIMING
+	ptl.stop();
+	cout << "solveOnes,"  << ptl.elapsedString() << endl;
+#endif
 	return solvedSome;
 }
 
@@ -531,6 +545,21 @@ bool Sudoku::startGuessing() {
 	return isPuzzleSolved();
 }
 
+uint8_t Sudoku::numberOfBitsSet(bitset<9> bs) {
+	uint8_t retval = 0;
+	for(auto b:bits) {
+		if(bs.test(b)) 
+			retval++;
+	}
+	return retval;
+}
+
+uint8_t Sudoku::singleBitSet(bitset<9> bs) {
+	for(auto b:bits) {
+		if(bs.test(b)) return b;
+	}
+	return 0;
+}
 void Sudoku::test(void) {
 
  }

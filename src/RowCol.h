@@ -13,7 +13,9 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
+using std::ios;
+using std::string;
+using std::ostream;
 
 class RowCol {
 public:

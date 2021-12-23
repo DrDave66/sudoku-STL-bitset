@@ -8,7 +8,10 @@
 #include <vector>
 #include <fstream>
 
-using namespace std;
+using std::vector;
+using std::string;
+using std::fstream;
+using std::ios;
 
 class Puzzles
 {

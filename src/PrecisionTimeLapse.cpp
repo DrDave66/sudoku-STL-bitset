@@ -15,7 +15,7 @@ void PrecisionTimeLapse::stop() {
 }
 
 double PrecisionTimeLapse::elapsed() {
-    time_lapse = duration_cast<nanoseconds> (end - begin);
+    time_lapse = duration_cast<std::chrono::nanoseconds> (end - begin);
     return (double)time_lapse.count();
 }
 

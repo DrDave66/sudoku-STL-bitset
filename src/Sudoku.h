@@ -6,18 +6,24 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <map>
-#include <string>       // std::string
 #include <iostream>     // std::cout
-#include <sstream> 
-#include <limits>
 #include <iomanip>
-#include <algorithm>
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
+#include <sstream>
 
-using namespace std;
+using std::array;
+using std::vector;
+using std::set;
+using std::cout;
+using std::endl;
+using std::setw;
+using std::flush;
+using std::stringstream;
+using std::string;
+using std::uint8_t;
+
 
 #include "Guess.h"
 #include "PrecisionTimeLapse.h"
@@ -74,8 +80,12 @@ public:
 	array<Guess, 81> guessList; // ordered list of guesses
 	uint8_t guessNumber;
     Guess newGuess;
-
+	array<bitset<9>, 9> bitMask;
+	uint8_t numberOfBitsSet(bitset<9> b);
+	uint8_t singleBitSet(bitset<9> b);
 };
+
+
 // crossProduct will take any two iterables
 template <class T, class U>
 vector<RowCol> crossProduct (T a, U b) {

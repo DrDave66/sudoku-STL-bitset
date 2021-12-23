@@ -2,7 +2,8 @@
 //
 #include <string>
 #include <vector>
-using namespace std;
+using std::string;
+using std::vector;
 #include "Puzzles.h"
 #include "Sudoku.h"
 #include "PrecisionTimeLapse.h"
@@ -42,34 +43,43 @@ void printPuzzleText(Sudoku ss) {
 // Loaded 100000 	puzzles in 113.327293 msec, 1.133273 usec/puzzle
 // Loaded 1000000 	puzzles in 1011.960570 msec, 1.011961 usec/puzzle
 // Loaded 10000000 	puzzles in 10631.764658 msec, 1.063176 usec/puzzle
-array<uint8_t,9> ll = {0,1,2,3,4,5,6,7,8};
+
 #ifdef SHORTMAIN
 int main() {
-	Sudoku s(solved1);
-	s.clearPuzzle();
-	s.printPuzzle();
-	s.printAllowableValues();
-	for(auto r:ll) {
-		for(auto c:ll) {
-			s.allowableValues[r][c].set();
-			s.puzzle[r][c].reset();
-			s.puzzle[r][c].set((r+c)%9);
-		}
-		s.printPuzzle();
-		s.printAllowableValues();
+	// Sudoku s(grid1);
+	// s.printPuzzle();
+	// s.printAllowableValues();
+	// s.solveOnes();
+	// s.printPuzzle();
+	// s.printAllowableValues();
+	// for(auto r:s.rows) {
+	// 	for(auto c:s.cols) {
+	// 		s.allowableValues[r][c].set();
+	// 		s.puzzle[r][c].reset();
+	// 		s.puzzle[r][c].set((r+c)%9);
+	// 	}
+	// }
+	array<bitset<9>,9> bs;
+	for (int i = 0 ; i < 9 ; i++) {
+		bs[i].reset();
+		bs[i].set(i);
+		bs[i].set(8-i);
+		cout << bs[i] << endl;
 	}
-	s.printPuzzle();
-	s.printAllowableValues();
-	bitset<9> a;
-	bitset<9> b;
-	a=511;
-	b=33;
-	bitset<9> c;
-	c = a ^ b;
-	
-	cout << a << endl;
-	cout << b << endl;
-	cout << c << endl;
+	bitset<9> temp = 0;
+	cout << temp << endl;
+	cout << endl;
+	cout << temp << endl;
+
+	for (int i = 0 ; i < 8 ;i++) {
+		temp ^= bs[i];
+		cout << temp << endl;
+
+	}
+	cout << "final" << endl;
+	cout << temp << endl;
+
+
 }
 
 #else
