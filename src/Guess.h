@@ -3,8 +3,10 @@
 #define _GUESS
 
 #include <string>
+#include <bitset>
 #include <cstring>
 
+using std::bitset;
 using std::string;
 
 #include "RowCol.h"
@@ -15,7 +17,7 @@ class Sudoku;
 class Guess
 {
 public:
-	Guess(RowCol _square, char _guess, SUDOKUTYPE _puzzle, SUDOKUTYPE _allowableValues);
+    Guess(RowCol _square, bitset<9> _bit, SUDOKUTYPE _puzzle, SUDOKUTYPE _allowableValues);
 
     Guess();
 	Guess(const Guess&);
@@ -26,7 +28,7 @@ public:
     SUDOKUTYPE puzzle;
     SUDOKUTYPE allowableValues;
 	RowCol square;
-	char guess;
+	bitset<9> guess;
 };
 
 #endif // _GUESS

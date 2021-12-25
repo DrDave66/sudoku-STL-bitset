@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <sstream>
+#include <bitset>
 
 using std::array;
 using std::vector;
@@ -23,6 +24,7 @@ using std::flush;
 using std::stringstream;
 using std::string;
 using std::uint8_t;
+using std::bitset;
 
 
 #include "Guess.h"
@@ -39,18 +41,17 @@ public:
 	void createVectors(void);
     
 	bool setPuzzle(string p);
-	//bool setValue(string square, string value);
     bool setValue(uint8_t row, uint8_t col, uint8_t bit);
-    bool setValue(RowCol rc, uint8_t bit);
+    bool setValue(RowCol rc, bitset<9>);
     
 	void printPuzzle(void);
 	void printPuzzle(string title);
 	void printAllowableValues(void);
 	void printAllowableValues(string title);
-	bool solveOnes(void);
-	
+
+	void solveOnes(void);
     bool isPuzzleSolved(void);
-	bool removeGuess(RowCol, char);
+	bool removeGuess(RowCol, bitset<9>);
 	bool guessesRemain(void);
 	Guess getGuess();
 	bool popGuess();
@@ -69,9 +70,9 @@ public:
     
 	string digitsText = "123456789";
 
-    array<array<RowCol, 9> ,27> rcUnitList;
-    array<array<array<array<RowCol, 9> ,3 > ,9> ,9> rcUnits;
-    array<array<array<RowCol, 20> ,9> ,9> rcPeers;
+    array<array<RowCol, 9> ,27> unitList;
+    array<array<array<array<RowCol, 9> ,3 > ,9> ,9> units;
+    array<array<array<RowCol, 20> ,9> ,9> peers;
 
     set<string> digitSet = { "1","2","3","4","5","6","7","8","9" };
 	char digits[10] = "123456789";
@@ -91,11 +92,9 @@ template <class T, class U>
 vector<RowCol> crossProduct (T a, U b) {
     static vector<RowCol> v;
     v.clear();
-    RowCol rc;
     for(uint8_t aa : a) {
         for (uint8_t bb : b) {
-            rc.set(aa,bb);
-            v.push_back(rc);
+            v.push_back(RowCol(aa,bb));
         }
     }
 	return v;

@@ -26,6 +26,12 @@ string solved3 = "52384691796153742848721965315469378263247819579815234687932456
 string solved4 = "152483679697152348438976251314765892869241735275398164786524913941837526523619487";
 string solved5 = "176923584524817639893654271957348162638192457412765398265489713781236945349571826";
 
+string p1 = "....1..75....8.6..9....5...4.2...561..1.2..9..9...1.32.7.1.2.8458.67...312.3.....";
+string p2 = "5.7....61...76.8...6..8...4.....3....5..4...949.6.2..814..5...6.79........5.18..2";
+string p3 = "6..4....5.92.3.....4.76.23.......37..6...1.2.329.......1.....829.3...5...7451...3";
+string s1 = "248916375357284619916735248432897561861523497795461832673152984584679123129348756";
+string s2 = "587324961914765823362189754821593647756841239493672518148257396279436185635918472";
+string s3 = "631482795792135648845769231158296374467351829329847156516973482983624517274518963";
 void printPuzzleText(Sudoku ss) {
     string s;
     for(int r = 0 ; r < 9 ; r++) {
@@ -36,7 +42,7 @@ void printPuzzleText(Sudoku ss) {
     cout << endl;
 }
 
-#define SHORTMAIN
+
 // Loaded 100 		puzzles in 0.784945 msec, 7.849450 usec/puzzle
 // Loaded 1000 		puzzles in 2.524844 msec, 2.524844 usec/puzzle
 // Loaded 10000 	puzzles in 16.981709 msec, 1.698171 usec/puzzle
@@ -44,50 +50,53 @@ void printPuzzleText(Sudoku ss) {
 // Loaded 1000000 	puzzles in 1011.960570 msec, 1.011961 usec/puzzle
 // Loaded 10000000 	puzzles in 10631.764658 msec, 1.063176 usec/puzzle
 
+// 100P 0 ..4.83..2.51..43......9671.12.8....6.4....5..83.6.79...6.3.9.4...7...2.5.9..5.8.3
+#define SHORTMAIN
 #ifdef SHORTMAIN
 int main() {
-	// Sudoku s(grid1);
-	// s.printPuzzle();
-	// s.printAllowableValues();
-	// s.solveOnes();
-	// s.printPuzzle();
-	// s.printAllowableValues();
-	// for(auto r:s.rows) {
-	// 	for(auto c:s.cols) {
-	// 		s.allowableValues[r][c].set();
-	// 		s.puzzle[r][c].reset();
-	// 		s.puzzle[r][c].set((r+c)%9);
-	// 	}
+	//Puzzles p("../../sudoku-puzzles/100-Failed1.txt);
+	Sudoku s;
+	s.printPuzzle();
+	s.printAllowableValues();
+	s.setValue(4,4,2);
+	//s.solvePuzzle();
+	s.printPuzzle();
+	s.printAllowableValues();
+
+    
+	// array<bitset<9>,9> bs;
+	// for (int i = 0 ; i < 9 ; i++) {
+	// 	bs[i].reset();
+	// 	bs[i].set(i);
+	// 	bs[i].set(8-i);
+	// 	cout << bs[i] << endl;
 	// }
-	array<bitset<9>,9> bs;
-	for (int i = 0 ; i < 9 ; i++) {
-		bs[i].reset();
-		bs[i].set(i);
-		bs[i].set(8-i);
-		cout << bs[i] << endl;
-	}
-	bitset<9> temp = 0;
-	cout << temp << endl;
-	cout << endl;
-	cout << temp << endl;
+	// bitset<9> temp = 0;
+	// cout << temp << endl;
+	// cout << endl;
+	// cout << temp << endl;
 
-	for (int i = 0 ; i < 8 ;i++) {
-		temp ^= bs[i];
-		cout << temp << endl;
-
-	}
-	cout << "final" << endl;
-	cout << temp << endl;
+	// for (int i = 0 ; i < 9 ;i++) {
+	// 	cout << bs[i] << " start" << endl;
+	// 	for(int j = 0 ; j < 9 ; j++) {
+	// 		temp = bs[i] ^ s.bitMask[j];
+	// 		cout << temp << endl;
+	// 	}
+	// 	cout << endl;
+	// }
+	// cout << "final" << endl;
+	// cout << temp << endl;
 
 
 }
 
 #else
+
 int main()
 {
 
 	Puzzles p;
-	Puzzles pf("../sudoku-puzzles/1MP.txt");
+	Puzzles pf("../../sudoku-puzzles/1MP.txt");
 	cout << pf.getNumberOfPuzzles() << " puzzles loaded" << endl << endl << endl;
 	if (pf.getNumberOfPuzzles() == 0)
 		return 1;
@@ -125,8 +134,8 @@ int main()
 		}
 		time = ptl.elapsed();
 
-		minTime = min(minTime, time);
-		maxTime = max(maxTime, time);
+		minTime = std::min(minTime, time);
+        maxTime = std::max(maxTime, time);
 		sumTime += time;
 		//cout << time << " " << sumTime << "  ";
 		//cout << "Total time: " << ptl.elapsedString() << " solved " << solved << " out of " << i+1 << endl;
@@ -146,5 +155,5 @@ int main()
 //  time to solve is 40 usec.  non stl is 30 usec
 
 // 10MP-Failed.txt      Min time: 0.107397 ms, Max time: 180.694 ms, Average Time: 0.963753 ms, Total: 364.072973 sec
-// 1MP.txt              Min time: 0.035211 ms, Max time: 7.05304 ms, Average Time: 0.0410138 ms, Total: 55.709054 sec
-
+// 1MP old way			Min time: 0.021334 ms, Max time: 5.1635 ms, Average Time: 0.0305412 ms, Total: 66.192528 sec
+// 1MP bit round 1 		Min time: 0.006958 ms, Max time: 12.3362 ms, Average Time: 0.00862062 ms, Total: 13.802928 sec
