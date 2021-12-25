@@ -2,8 +2,14 @@
 //
 #include <string>
 #include <vector>
+#include <iostream>
 using std::string;
 using std::vector;
+using std::cout;
+using std::endl;
+using std::min;
+using std::max;
+
 #include "Puzzles.h"
 #include "Sudoku.h"
 #include "PrecisionTimeLapse.h"
@@ -32,15 +38,6 @@ string p3 = "6..4....5.92.3.....4.76.23.......37..6...1.2.329.......1.....829.3.
 string s1 = "248916375357284619916735248432897561861523497795461832673152984584679123129348756";
 string s2 = "587324961914765823362189754821593647756841239493672518148257396279436185635918472";
 string s3 = "631482795792135648845769231158296374467351829329847156516973482983624517274518963";
-void printPuzzleText(Sudoku ss) {
-    string s;
-    for(int r = 0 ; r < 9 ; r++) {
-        for (int c = 0 ; c < 9 ; c++) {
-            cout << ss.puzzle[r][c];
-        }
-    }
-    cout << endl;
-}
 
 
 // Loaded 100 		puzzles in 0.784945 msec, 7.849450 usec/puzzle
@@ -54,39 +51,29 @@ void printPuzzleText(Sudoku ss) {
 #define SHORTMAIN
 #ifdef SHORTMAIN
 int main() {
-	Puzzles p("../../sudoku-puzzles/100-Failed1.txt");
-	Sudoku s(easy505);
-	s.printPuzzle();
-	s.printAllowableValues();
-	s.solvePuzzle();
-	s.printPuzzle();
-	s.printAllowableValues();
-
-    
-	// array<bitset<9>,9> bs;
-	// for (int i = 0 ; i < 9 ; i++) {
-	// 	bs[i].reset();
-	// 	bs[i].set(i);
-	// 	bs[i].set(8-i);
-	// 	cout << bs[i] << endl;
-	// }
-	// bitset<9> temp = 0;
-	// cout << temp << endl;
-	// cout << endl;
-	// cout << temp << endl;
-
-	// for (int i = 0 ; i < 9 ;i++) {
-	// 	cout << bs[i] << " start" << endl;
-	// 	for(int j = 0 ; j < 9 ; j++) {
-	// 		temp = bs[i] ^ s.bitMask[j];
-	// 		cout << temp << endl;
-	// 	}
-	// 	cout << endl;
-	// }
-	// cout << "final" << endl;
-	// cout << temp << endl;
-
-
+	Puzzles p("../../sudoku-puzzles/10MP.txt");
+	Puzzles sol("../../sudoku-puzzles/10MS.txt");
+	printf("%d puzzles loaded\n", p.getNumberOfPuzzles());
+	printf("%d solutions loaded\n", sol.getNumberOfPuzzles());
+	
+	Sudoku s;
+	Sudoku sols;
+	uint32_t matched = 0;
+	uint32_t notmatched = 0;
+	uint32_t i;
+	for(i = 0; i < p.getNumberOfPuzzles() ; i++) {
+		s.setPuzzle(p.getPuzzle(0));
+		s.solvePuzzle();
+		sols.setPuzzle(sol.getPuzzle(0));
+		if( s.puzzle == sols.puzzle)
+			matched++;
+		else
+			notmatched++;
+		if ((i+1) % 50000 == 0)
+			printf("%7d - %7d - %7d\n", i+1, matched, notmatched);
+	}
+	printf("done %7d puzzles- %7d matched - %7d not matched\n", i+1, matched, notmatched);
+	
 }
 
 #else
@@ -132,9 +119,12 @@ int main()
 #endif
 		}
 		time = ptl.elapsed();
-
-		minTime = std::min(minTime, time);
-        maxTime = std::max(maxTime, time);
+//max time puzzle 140632 1.3599
+//min time puzzle 644634 0.006723 
+		minTime = min(minTime, time);
+        maxTime = max(maxTime, time);
+		if(time == minTime) cout << "min time puzzle " << i << " " << minTime*1000.0 << endl;
+		if(time == maxTime) cout << "max time puzzle " << i << " " << maxTime*1000.0 << endl;
 		sumTime += time;
 		//cout << time << " " << sumTime << "  ";
 		//cout << "Total time: " << ptl.elapsedString() << " solved " << solved << " out of " << i+1 << endl;
