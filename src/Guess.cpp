@@ -6,18 +6,6 @@ Guess::Guess(RowCol _square, bitset<9> _guess,SUDOKUTYPE _puzzle, SUDOKUTYPE _al
     square = _square;
 	guess = _guess;
 }
-array<uint8_t,9> ii = {0,1,2,3,4,5,6,7,8};
-Guess::Guess() {
-//    for(auto r:ii) {
-//        for(auto c:ii) {
-//            puzzle[r][c] = 0;
-//            allowableValues[r][c] = 511;
-//        }
-//        
-//    }
-//	square = RowCol();
-//	guess = '\0';
-}
 
 Guess::Guess(const Guess& g) {
     puzzle = g.puzzle;

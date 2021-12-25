@@ -2,7 +2,6 @@
 #ifndef _PUZZLES
 #define _PUZZLES
 
-#include <cstdint>
 #include <string>
 #include <iostream>
 #include <vector>
@@ -13,6 +12,10 @@ using std::string;
 using std::fstream;
 using std::ios;
 
+/**
+ * @brief used to load files that contain puzzles
+ * 
+ */
 class Puzzles
 {
 public:
