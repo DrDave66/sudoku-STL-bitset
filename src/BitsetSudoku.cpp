@@ -54,12 +54,11 @@ void printPuzzleText(Sudoku ss) {
 #define SHORTMAIN
 #ifdef SHORTMAIN
 int main() {
-	//Puzzles p("../../sudoku-puzzles/100-Failed1.txt);
-	Sudoku s;
+	Puzzles p("../../sudoku-puzzles/100-Failed1.txt");
+	Sudoku s(easy505);
 	s.printPuzzle();
 	s.printAllowableValues();
-	s.setValue(4,4,2);
-	//s.solvePuzzle();
+	s.solvePuzzle();
 	s.printPuzzle();
 	s.printAllowableValues();
 

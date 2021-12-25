@@ -59,34 +59,32 @@ public:
 	bool solvePuzzle();
 	bool startGuessing();
 	void printGuessList();
-	void test();
+	uint8_t singleBitSet(bitset<9> b);
 //private:
-    
-    static const uint8_t numRows = 9;
-    static const uint8_t numCols = 9;
-    array<uint8_t,9> rows = {0,1,2,3,4,5,6,7,8};
-    array<uint8_t,9> cols = {0,1,2,3,4,5,6,7,8};
-	array<uint8_t,9> bits = {0,1,2,3,4,5,6,7,8};
-    
-	string digitsText = "123456789";
+    // these arrays are used for optimized iteration
+    array<uint8_t,9> rows;
+    array<uint8_t,9> cols;
+	array<uint8_t,9> bits;
 
+	// arrays for unitList, units and peers
+	// 27 units to list, 9 entries in a unitlist
     array<array<RowCol, 9> ,27> unitList;
-    array<array<array<array<RowCol, 9> ,3 > ,9> ,9> units;
+	// each cell belongs to 3 units, each having 9 cells
+	array<array<array<array<RowCol, 9> ,3 > ,9> ,9> units;
+	// each cell has 20 peers
     array<array<array<RowCol, 20> ,9> ,9> peers;
 
-    set<string> digitSet = { "1","2","3","4","5","6","7","8","9" };
-	char digits[10] = "123456789";
     SUDOKUTYPE puzzle;
     SUDOKUTYPE allowableValues;
 	array<Guess, 81> guessList; // ordered list of guesses
 	uint8_t guessNumber;
     Guess newGuess;
 	array<bitset<9>, 9> bitMask;
-	uint8_t numberOfBitsSet(bitset<9> b);
-	uint8_t singleBitSet(bitset<9> b);
+
 };
 
-
+// this is used to programmically populate cells, units, unitlists and peers
+// it uses a vector because the return size is unknown
 // crossProduct will take any two iterables
 template <class T, class U>
 vector<RowCol> crossProduct (T a, U b) {

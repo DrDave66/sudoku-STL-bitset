@@ -224,41 +224,42 @@ I ||        46 |      4679 |           ||         4 |           |        47 ||  
   If either Step 1 or Step 2 places a value, we repeat Step 1 and Step 2 again since placing a value changes the available value matrix.  For ~97% of puzzles in the 10 million puzzle set that i test with are solved this way.  In the 1 million puzzle set, all puzzles are solved with this technique alone. But not every puzzle is solved with these two step.  For the ones that are not solved, we must use a binary tree search.
 
   ## Guessing
-  Guessing a sudoku solution is hard, **VERY** hard. we have 81 cells, with 9 possible values.  That leads to a total of 1.5E17 possible solutions.  To put that into perspective, the age of the universe (13.8 billion years, or 7000 years if your are a bible-humping young earth creationst moron) is 4.3E17 seconds.
+  Guessing a sudoku solution is hard, **VERY** hard. we have 81 cells, with 9 possible values.  That leads to a total of 1.9E77 (9^81) possible solutions.  To put that into perspective, the age of the universe (13.8 billion years, or 7000 years if your are a bible-humping young earth creationst moron) is 4.3E17 seconds.
 
   Random guessing is **NOT** the way that you want to approach solving Sudoku.  After Steps 1 and 2 above, we have little recourse but to start guessing at solutions.  But let's not be totally random about our guesses.
 
   Here's a starting puzzle, and how it sits after Steps 1 and 2.
+
   ```
        1   2   3    4   5   6    7   8   9
-  =========================================
+    =========================================
 A || 1 | . | . || 9 | 2 | . || . | . | . ||
 B || 5 | 2 | 4 || . | 1 | . || . | . | . ||
 C || . | . | . || . | . | . || . | 7 | . ||
-  || --------- || --------- || --------- ||
+    || --------- || --------- || --------- ||
 D || . | 5 | . || . | . | 8 || 1 | . | 2 ||
 E || . | . | . || . | . | . || . | . | . ||
 F || 4 | . | 2 || 7 | . | . || . | 9 | . ||
-  || --------- || --------- || --------- ||
+    || --------- || --------- || --------- ||
 G || . | 6 | . || . | . | . || . | . | . ||
 H || . | . | . || . | 3 | . || 9 | 4 | 5 ||
 I || . | . | . || . | 7 | 1 || . | . | 6 ||
-  =========================================
+    =========================================
 
          1           2           3            4           5           6            7           8           9
-  =================================================================================================================
-A ||           |       378 |      3678 ||           |           |     34567 ||     34568 |      3568 |       348 ||
-B ||           |           |           ||       368 |           |       367 ||       368 |       368 |       389 ||
-C ||      3689 |       389 |      3689 ||     34568 |      4568 |      3456 ||    234568 |           |     13489 ||
-  || --------------------------------- || --------------------------------- || --------------------------------- ||
-D ||      3679 |           |      3679 ||       346 |       469 |           ||           |        36 |           ||
-E ||     36789 |     13789 |    136789 ||    123456 |      4569 |    234569 ||    345678 |      3568 |      3478 ||
-F ||           |       138 |           ||           |        56 |       356 ||      3568 |           |        38 ||
-  || --------------------------------- || --------------------------------- || --------------------------------- ||
-G ||     23789 |           |    135789 ||      2458 |      4589 |      2459 ||      2378 |      1238 |      1378 ||
-H ||       278 |       178 |       178 ||       268 |           |        26 ||           |           |           ||
-I ||      2389 |      3489 |      3589 ||      2458 |           |           ||       238 |       238 |           ||
-  =================================================================================================================
+    =================================================================================================================  
+A ||           |       378 |      3678 ||           |           |     34567 ||     34568 |      3568 |       348 ||  
+B ||           |           |           ||       368 |           |       367 ||       368 |       368 |       389 ||  
+C ||      3689 |       389 |      3689 ||     34568 |      4568 |      3456 ||    234568 |           |     13489 ||  
+    || --------------------------------- || --------------------------------- || --------------------------------- ||  
+D ||      3679 |           |      3679 ||       346 |       469 |           ||           |        36 |           ||  
+E ||     36789 |     13789 |    136789 ||    123456 |      4569 |    234569 ||    345678 |      3568 |      3478 ||  
+F ||           |       138 |           ||           |        56 |       356 ||      3568 |           |        38 ||  
+    || --------------------------------- || --------------------------------- || --------------------------------- ||  
+G ||     23789 |           |    135789 ||      2458 |      4589 |      2459 ||      2378 |      1238 |      1378 ||  
+H ||       278 |       178 |       178 ||       268 |           |        26 ||           |           |           ||  
+I ||      2389 |      3489 |      3589 ||      2458 |           |           ||       238 |       238 |           ||  
+    =================================================================================================================  
 ```
 After Steps 1 and 2 have exhausted their possibilities:
 ```
@@ -292,6 +293,70 @@ H ||       278 |        78 |           ||        28 |           |           ||  
 I ||       389 |           |      3589 ||        58 |           |           ||        38 |           |           ||
   =================================================================================================================
 ```
+Even at this partially solved stage, there are still MANY solutions - 8.8E22 possible solutions.  So we take a strategy of trying to eliminate as many guesses as quickly as possible.  If we have a square with two possible values, and we determine that one of them does not produce a valid solution, then we have eliminated half of the possible solutions.  So, we find the squares with the fewest allowable values, randomly select one of them, and randomly select one of its allowable values.  In the puzzle above, cells H2, F5, F6, I7, D8 and F9 each have two possible values.  We randomly select one, say F6, and randomly choose either 3 or 5, say 3.  We place a value of 3 into F6 as a ***guess***.  We maintain an internal ***guess list*** treated as a LIFO stack.  We add and delete guesses only from one end. Every time we make a guess, we store the cell of the guess, it's value, the puzzle state (including available values) so that if we determine that a guess is incorrect, we can restore the puzzle state.  Looking carefully, if we say F6 is 3, and remove 3 from F6's peers, we see that cell F9 only has one value available - 8. After each guess, we need to go back and repeat Steps 1 and 2 above. If we finish with Steps 1 and 2 and do not reach a solution, we need to make another guess.  We repeat until all the guesses are exhausted.  If we have solved the puzzle, we quit.  If it is not solved, we must guess more.
+
+## Solution Algorithm
+Once we have loaded a puzzle, the following steps are followed until a solution is reached, or all possible guesses are made and a solution can not be found.
+
+1. Search for all cells with only one avaialble value and place the value in the cell
+2. Search through all units for any value at can appear only in one cell in the unit and place the value in the cell
+3. Repeat Step 1 and Step 2 until no more values can be place or the puzzle is solved
+4. If puzzle is solved, stop, if not, start guessing  
+5. Guessing  
+5.1 Search for all cells with the fewest number of allowable values and randomly select one of those cells  
+5.2 Randomly select one of the allowable values and store it as a guess in the guess list  
+5.3 Assign the value selected in Step 5.2  
+5.4 Repeat steps 1-3  
+5.4.1 If the puzzle is solved, quit  
+5.4.2 If the puzzle is not solved, and there are still available guesses, make another guess jumping back to step 5.1  
+5.4.3 If there are no more guesses available, remove the last guess from the stack AND remove the last guess value from the list of available values  
+5.4.4 If there are still not guess available, remove another guess from the stack and remove that guess value from the list of available values (this is the step that backtracks up the binary search tree)
+6. The search concludes when a solution is found or there are not more possible guesses available
+
+This is almost faster to show in real code than to explain:  
+
+This block performs step 1-4, and initiates step 5 if the puzzle is not solved
+
+    bool Sudoku::solvePuzzle() {
+	    solveOnes();
+	    if (isPuzzleSolved())
+		return true;
+	    else {
+            startGuessing();
+        }
+	    return isPuzzleSolved();
+    }  
+This block is responsible for the guess loop:
+
+    bool Sudoku::startGuessing() {
+	    while(!isPuzzleSolved()) {      // while the puzzle is not solved
+		    while (guessesRemain()) {   // and there are available guesses
+	    		Guess g = getGuess();   // search and randomly identify a guess
+	    		pushGuess(g);           // save the guess on the guess list, saves puzzle state
+	    		setValue(g.square, g.guess);  // set the guess value (which propagates to peers)
+	    		solveOnes();            // perform steps 1-4
+                // if the puzzle is not solved, and we are out of available guesses
+	    		if (isPuzzleSolved() == false && guessesRemain() == false) {
+	    			popGuess();  // remove a guess from the guess list and restore puzzle state
+                    // this may make new guesses available
+	    		}
+	    	} // loop if there are still guesses available
+            // if we have exhausted our guesses and we are still not solved, 
+	    	if (isPuzzleSolved() == false) {
+	    		if (guessList.size() == 0) {
+	    		}
+	    		if(popGuess() == false) { // remove another guess from the guess list restoring puzzle state
+	    			return false;
+	    		}
+	    	}
+			
+	    }
+        // if we are we have solved the puzzle
+	    return isPuzzleSolved();
+    }
+
+Simple, right?
+
 
 
 
