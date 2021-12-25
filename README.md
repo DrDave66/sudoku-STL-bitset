@@ -112,8 +112,8 @@ I || . | . | . || . | X | . || . | . | . ||
 ```
 The concept of peers is vital in the solution strategy of a puzzle.  If a number is placed in a cell, it is *excluded from being a possible value in all of that cell's peers*.
 
-## Solution Strategy
-There are two basic conditions that are employed to solve the vast majority of Sudoku puzzles.  Both are assisted by the maintenance of an ***allowable values*** matrix.  This matrix mirrors the Sudoku puzzle, but contains the list of allowable values for each cell. The puzzle begins with all values being allowed to be placed in every cell.  But once a number is placed into a cell, that number is excluded as an allowableValue for all of that cells peers.  
+## Allowable Values
+There are two basic conditions that are employed to solve the vast majority of Sudoku puzzles.  Both are assisted by the maintenance of an ***allowable values*** matrix.  This matrix mirrors the Sudoku puzzle, but contains the list of allowable values for each cell. The puzzle begins with all values being allowed to be placed in every cell.  But once a number is placed into a cell, that number is excluded as an allowable value for all of that cells peers.  
 
 With an empty puzzle, the puzzle and allowable value matrices are:
 ```
@@ -146,5 +146,152 @@ H || 123456789 | 123456789 | 123456789 || 123456789 | 123456789 | 123456789 || 1
 I || 123456789 | 123456789 | 123456789 || 123456789 | 123456789 | 123456789 || 123456789 | 123456789 | 123456789 ||
   =================================================================================================================
   ```
+Notice that every value is allowed to be placed in every cell at this point.  
+
+If we assign cell E5 a value of 3, the puzzle and allowable value matrices are now:
+```
+    1   2   3    4   5   6    7   8   9
+  =========================================
+A || . | . | . || . | . | . || . | . | . ||
+B || . | . | . || . | . | . || . | . | . ||
+C || . | . | . || . | . | . || . | . | . ||
+  || --------- || --------- || --------- ||
+D || . | . | . || . | . | . || . | . | . ||
+E || . | . | . || . | 3 | . || . | . | . ||
+F || . | . | . || . | . | . || . | . | . ||
+  || --------- || --------- || --------- ||
+G || . | . | . || . | . | . || . | . | . ||
+H || . | . | . || . | . | . || . | . | . ||
+I || . | . | . || . | . | . || . | . | . ||
+  =========================================
+
+         1           2           3            4           5           6            7           8           9
+  =================================================================================================================
+A || 123456789 | 123456789 | 123456789 || 123456789 |  12456789 | 123456789 || 123456789 | 123456789 | 123456789 ||
+B || 123456789 | 123456789 | 123456789 || 123456789 |  12456789 | 123456789 || 123456789 | 123456789 | 123456789 ||
+C || 123456789 | 123456789 | 123456789 || 123456789 |  12456789 | 123456789 || 123456789 | 123456789 | 123456789 ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+D || 123456789 | 123456789 | 123456789 ||  12456789 |  12456789 |  12456789 || 123456789 | 123456789 | 123456789 ||
+E ||  12456789 |  12456789 |  12456789 ||  12456789 |           |  12456789 ||  12456789 |  12456789 |  12456789 ||
+F || 123456789 | 123456789 | 123456789 ||  12456789 |  12456789 |  12456789 || 123456789 | 123456789 | 123456789 ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+G || 123456789 | 123456789 | 123456789 || 123456789 |  12456789 | 123456789 || 123456789 | 123456789 | 123456789 ||
+H || 123456789 | 123456789 | 123456789 || 123456789 |  12456789 | 123456789 || 123456789 | 123456789 | 123456789 ||
+I || 123456789 | 123456789 | 123456789 || 123456789 |  12456789 | 123456789 || 123456789 | 123456789 | 123456789 ||
+  =================================================================================================================
+```
+Notice that the value of 3 has been removed from all of the peers of cell E5, and cell E5 no longer has any allowable values, since it's value has been assigned.
+
+## Solution Strategy
+Let's begin with a real puzzle.  The puzzle and allowable value matrices are:
+```
+     1   2   3    4   5   6    7   8   9
+  =========================================
+A || . | . | 3 || . | 2 | . || 6 | . | . ||
+B || 9 | . | . || 3 | . | 5 || . | . | 1 ||
+C || . | . | 1 || 8 | . | 6 || 4 | . | . ||
+  || --------- || --------- || --------- ||
+D || . | . | 8 || 1 | . | 2 || 9 | . | . ||
+E || 7 | . | . || . | . | . || . | . | 8 ||
+F || . | . | 6 || 7 | . | 8 || 2 | . | . ||
+  || --------- || --------- || --------- ||
+G || . | . | 2 || 6 | . | 9 || 5 | . | . ||
+H || 8 | . | . || 2 | . | 3 || . | . | 9 ||
+I || . | . | 5 || . | 1 | . || 3 | . | . ||
+  =========================================
+
+         1           2           3            4           5           6            7           8           9
+  =================================================================================================================
+A ||        45 |      4578 |           ||        49 |           |       147 ||           |      5789 |        57 ||
+B ||           |     24678 |        47 ||           |        47 |           ||        78 |       278 |           ||
+C ||        25 |       257 |           ||           |        79 |           ||           |     23579 |      2357 ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+D ||       345 |       345 |           ||           |      3456 |           ||           |     34567 |     34567 ||
+E ||           |    123459 |        49 ||       459 |     34569 |         4 ||         1 |     13456 |           ||
+F ||      1345 |     13459 |           ||           |      3459 |           ||           |      1345 |       345 ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+G ||       134 |      1347 |           ||           |       478 |           ||           |      1478 |        47 ||
+H ||           |      1467 |        47 ||           |       457 |           ||        17 |      1467 |           ||
+I ||        46 |      4679 |           ||         4 |           |        47 ||           |     24678 |      2467 ||
+  =================================================================================================================
+  ```
+  #### Step 1:
+  First we search through the puzzle and find cells with only a single allowable value.  For example, cell I4 can only have a value of 4.  So we immediately assign cell I4 to 4. We search through all the cells this way and solve as many as we can.  
+
+  #### Step 2:
+  The second step is searching through each unit and finding any values that can appear in only one cell.  In the example above, we see that in Column 1, the value of 2 can only appear in cell C1.  In column 3, the value of 9 can only appear in cell E3. In Column 4, the value of 5 can only appear in cell E4. We loop through all of the units, see if any value can appear only once, and place that value.  
+
+  If either Step 1 or Step 2 places a value, we repeat Step 1 and Step 2 again since placing a value changes the available value matrix.  For ~97% of puzzles in the 10 million puzzle set that i test with are solved this way.  In the 1 million puzzle set, all puzzles are solved with this technique alone. But not every puzzle is solved with these two step.  For the ones that are not solved, we must use a binary tree search.
+
+  ## Guessing
+  Guessing a sudoku solution is hard, **VERY** hard. we have 81 cells, with 9 possible values.  That leads to a total of 1.5E17 possible solutions.  To put that into perspective, the age of the universe (13.8 billion years, or 7000 years if your are a bible-humping young earth creationst moron) is 4.3E17 seconds.
+
+  Random guessing is **NOT** the way that you want to approach solving Sudoku.  After Steps 1 and 2 above, we have little recourse but to start guessing at solutions.  But let's not be totally random about our guesses.
+
+  Here's a starting puzzle, and how it sits after Steps 1 and 2.
+  ```
+       1   2   3    4   5   6    7   8   9
+  =========================================
+A || 1 | . | . || 9 | 2 | . || . | . | . ||
+B || 5 | 2 | 4 || . | 1 | . || . | . | . ||
+C || . | . | . || . | . | . || . | 7 | . ||
+  || --------- || --------- || --------- ||
+D || . | 5 | . || . | . | 8 || 1 | . | 2 ||
+E || . | . | . || . | . | . || . | . | . ||
+F || 4 | . | 2 || 7 | . | . || . | 9 | . ||
+  || --------- || --------- || --------- ||
+G || . | 6 | . || . | . | . || . | . | . ||
+H || . | . | . || . | 3 | . || 9 | 4 | 5 ||
+I || . | . | . || . | 7 | 1 || . | . | 6 ||
+  =========================================
+
+         1           2           3            4           5           6            7           8           9
+  =================================================================================================================
+A ||           |       378 |      3678 ||           |           |     34567 ||     34568 |      3568 |       348 ||
+B ||           |           |           ||       368 |           |       367 ||       368 |       368 |       389 ||
+C ||      3689 |       389 |      3689 ||     34568 |      4568 |      3456 ||    234568 |           |     13489 ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+D ||      3679 |           |      3679 ||       346 |       469 |           ||           |        36 |           ||
+E ||     36789 |     13789 |    136789 ||    123456 |      4569 |    234569 ||    345678 |      3568 |      3478 ||
+F ||           |       138 |           ||           |        56 |       356 ||      3568 |           |        38 ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+G ||     23789 |           |    135789 ||      2458 |      4589 |      2459 ||      2378 |      1238 |      1378 ||
+H ||       278 |       178 |       178 ||       268 |           |        26 ||           |           |           ||
+I ||      2389 |      3489 |      3589 ||      2458 |           |           ||       238 |       238 |           ||
+  =================================================================================================================
+```
+After Steps 1 and 2 have exhausted their possibilities:
+```
+     1   2   3    4   5   6    7   8   9
+  =========================================
+A || 1 | . | . || 9 | 2 | . || . | . | . ||
+B || 5 | 2 | 4 || . | 1 | 7 || . | . | 9 ||
+C || . | . | . || . | . | . || 2 | 7 | 1 ||
+  || --------- || --------- || --------- ||
+D || . | 5 | . || . | . | 8 || 1 | . | 2 ||
+E || . | . | . || 1 | . | 2 || . | . | . ||
+F || 4 | 1 | 2 || 7 | . | . || . | 9 | . ||
+  || --------- || --------- || --------- ||
+G || . | 6 | . || . | . | 9 || . | 1 | . ||
+H || . | . | 1 || . | 3 | 6 || 9 | 4 | 5 ||
+I || . | 4 | . || . | 7 | 1 || . | 2 | 6 ||
+  =========================================
+
+         1           2           3            4           5           6            7           8           9
+  =================================================================================================================
+A ||           |       378 |      3678 ||           |           |       345 ||     34568 |      3568 |       348 ||
+B ||           |           |           ||       368 |           |           ||       368 |       368 |           ||
+C ||      3689 |       389 |      3689 ||     34568 |      4568 |       345 ||           |           |           ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+D ||      3679 |           |      3679 ||       346 |       469 |           ||           |        36 |           ||
+E ||     36789 |      3789 |     36789 ||           |      4569 |           ||    345678 |      3568 |      3478 ||
+F ||           |           |           ||           |        56 |        35 ||      3568 |           |        38 ||
+  || --------------------------------- || --------------------------------- || --------------------------------- ||
+G ||      2378 |           |      3578 ||      2458 |       458 |           ||       378 |           |       378 ||
+H ||       278 |        78 |           ||        28 |           |           ||           |           |           ||
+I ||       389 |           |      3589 ||        58 |           |           ||        38 |           |           ||
+  =================================================================================================================
+```
+
 
 
