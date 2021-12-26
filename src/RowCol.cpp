@@ -7,6 +7,10 @@
 //
 
 #include "RowCol.h"
+RowCol::RowCol() {
+    row = 15;
+    col = 15;
+}
 
 RowCol::RowCol(uint8_t r, uint8_t c) {
     row = r;
@@ -20,7 +24,7 @@ RowCol::RowCol(const RowCol& rc) {
 }
 
 RowCol& RowCol::operator=(RowCol cpy) {
-    //swap(*this, cpy);  // trade our resources for cpy's
+//    std::swap(*this, cpy);  // trade our resources for cpy's
     row = cpy.row;
     col = cpy.col;
     return *this;    // our (old) resources get destroyed with cpyb

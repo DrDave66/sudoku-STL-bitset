@@ -1,5 +1,9 @@
 #include "Guess.h"
 
+Guess::Guess() {
+    square = RowCol(10,10);
+    
+}
 Guess::Guess(RowCol _square, bitset<9> _guess,SUDOKUTYPE _puzzle, SUDOKUTYPE _allowableValues) {
     puzzle = _puzzle;
     allowableValues = _allowableValues;
@@ -15,10 +19,11 @@ Guess::Guess(const Guess& g) {
 }
 
 Guess& Guess::operator=(const Guess& cpy) {
-    puzzle = cpy.puzzle;
-    allowableValues = cpy.allowableValues;
 	square = cpy.square;
 	guess = cpy.guess;
+    puzzle = cpy.puzzle;
+    allowableValues = cpy.allowableValues;
+
 	return *this;
 }
 

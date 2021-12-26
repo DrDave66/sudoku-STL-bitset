@@ -17,7 +17,7 @@ class Sudoku;
 class Guess
 {
 public:
-    Guess() {};
+    Guess();
     Guess(RowCol _square, bitset<9> _bit, SUDOKUTYPE _puzzle, SUDOKUTYPE _allowableValues);
 
 	Guess(const Guess&);

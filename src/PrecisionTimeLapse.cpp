@@ -14,6 +14,10 @@ void PrecisionTimeLapse::stop() {
     end = high_resolution_clock::now();
 }
 
+high_resolution_clock::time_point PrecisionTimeLapse::tick() {
+    return high_resolution_clock::now();
+}
+
 double PrecisionTimeLapse::elapsed() {
     time_lapse = duration_cast<std::chrono::nanoseconds> (end - begin);
     return (double)time_lapse.count();

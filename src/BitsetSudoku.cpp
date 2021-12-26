@@ -48,7 +48,7 @@ string s3 = "6314827957921356488457692311582963744673518293298471565169734829836
 // Loaded 10000000 	puzzles in 10631.764658 msec, 1.063176 usec/puzzle
 
 // 100P 0 ..4.83..2.51..43......9671.12.8....6.4....5..83.6.79...6.3.9.4...7...2.5.9..5.8.3
-#define SHORTMAIN
+#define xSHORTMAIN
 #ifdef SHORTMAIN
 int main() {
 	Puzzles p("../../sudoku-puzzles/10MP.txt");
@@ -72,8 +72,8 @@ int main() {
 		if ((i+1) % 50000 == 0)
 			printf("%7d - %7d - %7d\n", i+1, matched, notmatched);
 	}
-	printf("done %7d puzzles- %7d matched - %7d not matched\n", i+1, matched, notmatched);
-	
+	printf("done %7d puzzles- %7d matched - %7d not matched\n", i, matched, notmatched);
+	s.printCounts();
 }
 
 #else
@@ -82,7 +82,7 @@ int main()
 {
 
 	Puzzles p;
-	Puzzles pf("../../sudoku-puzzles/1MP.txt");
+	Puzzles pf("../../sudoku-puzzles/10MP.txt");
 	cout << pf.getNumberOfPuzzles() << " puzzles loaded" << endl << endl << endl;
 	if (pf.getNumberOfPuzzles() == 0)
 		return 1;
@@ -96,53 +96,34 @@ int main()
 	double sumTime =  0.0;
 	double time;
 	total.start();
-	uint16_t onePercent = (uint16_t)(pf.getNumberOfPuzzles()/100);
+	bool isSolved;
+	uint32_t onePercent = (uint32_t)(pf.getNumberOfPuzzles()/100);
 	for (uint32_t i = 0; i < pf.getNumberOfPuzzles(); i++) {
-#ifdef PRINTING
-        cout << i+1 << " ";
-#endif
 		s.setPuzzle(pf.getPuzzle(i));
 		ptl.start();
-		s.solvePuzzle();
+		isSolved = s.solvePuzzle();
 		ptl.stop();
-		if (s.isPuzzleSolved() == true)
+		time = ptl.elapsed();
+		if (isSolved == true)
 		{
    			solved += 1;
-#ifdef PRINTING
-			cout << "SOLVED\n";
-#endif
-			//s.printPuzzle();
 		}
-		else {
-#ifdef PRINTING
-			cout << "NOTSOLVED \n";
-#endif
-		}
-		time = ptl.elapsed();
-//max time puzzle 140632 1.3599
-//min time puzzle 644634 0.006723 
 		minTime = min(minTime, time);
         maxTime = max(maxTime, time);
-		if(time == minTime) cout << "min time puzzle " << i << " " << minTime*1000.0 << endl;
-		if(time == maxTime) cout << "max time puzzle " << i << " " << maxTime*1000.0 << endl;
 		sumTime += time;
-		//cout << time << " " << sumTime << "  ";
-		//cout << "Total time: " << ptl.elapsedString() << " solved " << solved << " out of " << i+1 << endl;
 		if (i % onePercent == 0) {
 			printf("%6.2f%%   \n", (double)i/(double)numPuzzles * 100);
-			
 		}
 	}
 	total.stop();
-    //cout << " Total time: " << total.elapsed() << " seconds" << endl;
     cout << "Solved " << solved << " out of " << pf.getNumberOfPuzzles() << " puzzles\n";
 	cout << "Min time: " << minTime*1000.0 << " ms, Max time: " << maxTime*1000.0 << " ms, Average Time: " << (double)sumTime / (double)solved * 1000 << " ms, Total: " << total.elapsedString(SEC) << " sec" << endl;
-
+	cout << endl << endl;
+	s.printCounts();
 }
 
 #endif
-//  time to solve is 40 usec.  non stl is 30 usec
 
-// 10MP-Failed.txt      Min time: 0.107397 ms, Max time: 180.694 ms, Average Time: 0.963753 ms, Total: 364.072973 sec
-// 1MP old way			Min time: 0.021334 ms, Max time: 5.1635 ms, Average Time: 0.0305412 ms, Total: 66.192528 sec
-// 1MP bit round 1 		Min time: 0.006958 ms, Max time: 12.3362 ms, Average Time: 0.00862062 ms, Total: 13.802928 sec
+// 10MP-Failed.txt      	Min time: 0.107397 ms, Max time: 180.694 ms, Average Time: 0.963753 ms, Total: 364.072973 sec
+// 1MP old way				Min time: 0.021334 ms, Max time: 5.1635 ms, Average Time: 0.0305412 ms, Total: 66.192528 sec
+// 1MP bit round 1 			Min time: 0.006958 ms, Max time: 12.3362 ms, Average Time: 0.00862062 ms, Total: 13.802928 sec

@@ -19,7 +19,7 @@ using std::ostream;
 
 class RowCol {
 public:
-    RowCol() {};
+    RowCol();
     RowCol(uint8_t r, uint8_t);
     RowCol(const RowCol&);
 

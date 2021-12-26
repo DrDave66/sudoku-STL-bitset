@@ -28,6 +28,7 @@ class PrecisionTimeLapse
 		PrecisionTimeLapse();
 		void start();
 		void stop();
+		high_resolution_clock::time_point tick();
 		double elapsed();
 		string elapsedString();
 		string elapsedString(TIME_UNIT);

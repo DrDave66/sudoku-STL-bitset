@@ -38,11 +38,15 @@ public:
     Sudoku();
 	Sudoku(string puzzle);
 	void clearPuzzle();
+	uint64_t clearPuzzleCount;
 	void createVectors(void);
     
 	bool setPuzzle(string p);
+	uint64_t setPuzzleCount;
     bool setValue(uint8_t row, uint8_t col, uint8_t bit);
+	uint64_t setValueCount;
     bool setValue(RowCol rc, bitset<9>);
+	uint64_t setValueRCCount;
     
 	void printPuzzle(void);
 	void printPuzzle(string title);
@@ -50,16 +54,26 @@ public:
 	void printAllowableValues(string title);
 
 	void solveOnes(void);
+	uint64_t solveOnesCount;
     bool isPuzzleSolved(void);
+	uint64_t isPuzzleSolvedCount;
 	bool removeGuess(RowCol, bitset<9>);
+	uint64_t removeGuessCount;
 	bool guessesRemain(void);
+	uint64_t guessesRemainCount;
 	Guess getGuess();
+	uint64_t getGuessCount;
 	bool popGuess();
+	uint64_t popGuessCount;
 	void pushGuess(const Guess);
+	uint64_t pushGuessCount;
 	bool solvePuzzle();
 	bool startGuessing();
+	uint64_t startGuessingCount;
 	void printGuessList();
 	uint8_t singleBitSet(bitset<9> b);
+	uint64_t singleBitSetCount;
+	void printCounts();
 //private:
     // these arrays are used for optimized iteration
     array<uint8_t,9> rows;
@@ -74,12 +88,12 @@ public:
 	// each cell has 20 peers
     array<array<array<RowCol, 20> ,9> ,9> peers;
 
-    SUDOKUTYPE puzzle;
-    SUDOKUTYPE allowableValues;
+    SUDOKUTYPE puzzle; // the puzzle
+    SUDOKUTYPE allowableValues; // allowable values for each cell
 	array<Guess, 81> guessList; // ordered list of guesses
-	uint8_t guessNumber;
-    Guess newGuess;
-	array<bitset<9>, 9> bitMask;
+	uint8_t guessNumber; // guess number used for entries in guess list
+    Guess newGuess; // static new guess
+	array<bitset<9>, 9> bitMask; // bit masks for all values
 
 };
 
