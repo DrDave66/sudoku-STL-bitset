@@ -467,8 +467,6 @@ void Sudoku::printAllowableValues(string title)
 bool Sudoku::setValue(uint8_t r, uint8_t c, uint8_t bb)
 {
     setValueCount++;
-    RowCol rc(r, c);
-    uint8_t rr, cc;
     if (bb == 10)
     { // if value is empty
         puzzle[r][c].reset();
@@ -489,9 +487,7 @@ bool Sudoku::setValue(uint8_t r, uint8_t c, uint8_t bb)
     // propagate value to all peers, removing it from their allowable values
     for (RowCol p : peers[r][c])
     {
-        rr = p.row;
-        cc = p.col;
-        allowableValues[rr][cc].reset(bb);
+        allowableValues[p.row][p.col].reset(bb);
     }
     return true;
 }
@@ -522,7 +518,7 @@ void Sudoku::solveOnes(void)
     while (solvedSome == true)
     { // we don't want to keep doing this if we are not finding solutions
         while (solvedSome == true)
-        {
+       {
             solvedSome = false; // set to false.  will be set to true if a value is set
             // find squares with only one available value
             for (auto r : rows)
@@ -746,6 +742,7 @@ void Sudoku::printGuessList()
  */
 bool Sudoku::solvePuzzle()
 {
+    guessNumber=0;
     solveOnes();
     if (isPuzzleSolved())
         return true;

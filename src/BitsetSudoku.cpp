@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
+
+using std::fstream;
 using std::string;
 using std::vector;
 using std::cout;
@@ -51,29 +54,28 @@ string s3 = "6314827957921356488457692311582963744673518293298471565169734829836
 #define xSHORTMAIN
 #ifdef SHORTMAIN
 int main() {
-	Puzzles p("../../sudoku-puzzles/10MP.txt");
-	Puzzles sol("../../sudoku-puzzles/10MS.txt");
+	Puzzles p("../../sudoku-puzzles/.txt");
 	printf("%d puzzles loaded\n", p.getNumberOfPuzzles());
-	printf("%d solutions loaded\n", sol.getNumberOfPuzzles());
-	
+	vector<uint32_t> puzNum;
+	string filename = "guessed.txt";
+	fstream file;
+	string str;
 	Sudoku s;
-	Sudoku sols;
-	uint32_t matched = 0;
-	uint32_t notmatched = 0;
-	uint32_t i;
-	for(i = 0; i < p.getNumberOfPuzzles() ; i++) {
-		s.setPuzzle(p.getPuzzle(0));
-		s.solvePuzzle();
-		sols.setPuzzle(sol.getPuzzle(0));
-		if( s.puzzle == sols.puzzle)
-			matched++;
-		else
-			notmatched++;
-		if ((i+1) % 50000 == 0)
-			printf("%7d - %7d - %7d\n", i+1, matched, notmatched);
+	file.open(filename,ios::in);
+	if(file.is_open()) {
+		while(getline(file, str)) {
+			uint32_t val = atoi(str.c_str());
+			puzNum.push_back(val);
+		}
 	}
-	printf("done %7d puzzles- %7d matched - %7d not matched\n", i, matched, notmatched);
-	s.printCounts();
+	FILE* f = fopen("../../sudoku-puzzles/Guesses.txt","wt");
+	if(f != NULL) {
+		for(auto v:puzNum) {
+			fprintf(f,"%s\n",p.getPuzzle(v).c_str());
+		}
+	}
+	fclose(f);
+
 }
 
 #else
@@ -82,7 +84,7 @@ int main()
 {
 
 	Puzzles p;
-	Puzzles pf("../../sudoku-puzzles/10MP.txt");
+	Puzzles pf("../../sudoku-puzzles/1MP.txt");
 	cout << pf.getNumberOfPuzzles() << " puzzles loaded" << endl << endl << endl;
 	if (pf.getNumberOfPuzzles() == 0)
 		return 1;
@@ -98,6 +100,7 @@ int main()
 	total.start();
 	bool isSolved;
 	uint32_t onePercent = (uint32_t)(pf.getNumberOfPuzzles()/100);
+	vector<uint32_t> puzNumWithGuesses;
 	for (uint32_t i = 0; i < pf.getNumberOfPuzzles(); i++) {
 		s.setPuzzle(pf.getPuzzle(i));
 		ptl.start();
@@ -107,6 +110,11 @@ int main()
 		if (isSolved == true)
 		{
    			solved += 1;
+		}
+		else {
+			printf("Not solved puzzle %d\n",i);
+			s.printPuzzle();
+			s.printAllowableValues();
 		}
 		minTime = min(minTime, time);
         maxTime = max(maxTime, time);
@@ -127,3 +135,4 @@ int main()
 // 10MP-Failed.txt      	Min time: 0.107397 ms, Max time: 180.694 ms, Average Time: 0.963753 ms, Total: 364.072973 sec
 // 1MP old way				Min time: 0.021334 ms, Max time: 5.1635 ms, Average Time: 0.0305412 ms, Total: 66.192528 sec
 // 1MP bit round 1 			Min time: 0.006958 ms, Max time: 12.3362 ms, Average Time: 0.00862062 ms, Total: 13.802928 sec
+// 10MP						Min time: 0.003219 ms, Max time: 68.2603 ms, Average Time: 0.0180983 ms, Total: 220.961769 sec
