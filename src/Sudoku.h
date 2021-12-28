@@ -63,6 +63,7 @@ public:
 	uint64_t guessesRemainCount;
 	Guess getGuess();
 	uint64_t getGuessCount;
+	Guess getGuessRandom();
 	bool popGuess();
 	uint64_t popGuessCount;
 	void pushGuess(const Guess);

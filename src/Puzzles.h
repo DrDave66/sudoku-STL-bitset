@@ -6,11 +6,13 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <bitset>
 
 using std::vector;
 using std::string;
 using std::fstream;
 using std::ios;
+using std::bitset;
 
 /**
  * @brief used to load files that contain puzzles
@@ -24,7 +26,6 @@ public:
 	uint32_t getNumberOfPuzzles(void);
 	string getPuzzle(uint32_t num);
 	uint32_t loadFromFile(string fname);
-
 private:
 	string filename;
 	vector<string> puzzles;

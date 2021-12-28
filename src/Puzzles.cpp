@@ -1,8 +1,10 @@
 
 //#include <stdio.h>
 //#include <stdlib.h>
-
 #include "Puzzles.h"
+#include "Sudoku.h"
+#include "Guess.h"
+#include "RowCol.h"
 
 Puzzles::Puzzles()
 {
@@ -44,7 +46,6 @@ string Puzzles::getPuzzle(uint32_t num)
 {
 	return puzzles[num];
 }
-
 
 // Loaded 100 		puzzles in 0.784945 msec, 7.849450 usec/puzzle
 // Loaded 1000		puzzles in 2.524844 msec, 2.524844 usec/puzzle

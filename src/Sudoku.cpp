@@ -10,6 +10,8 @@
  */
 #include "Sudoku.h"
 #include <locale>
+#include <chrono>
+#include <random>
 
 #define noPRINTVECTORS
 /**
@@ -628,6 +630,41 @@ bool Sudoku::guessesRemain(void)
         }
     }
     return false;
+}
+
+/**
+ * @brief returns a random guess, not counting available values. Used for benchmarking and random puzzle generation
+ *
+ * @return Guess the guess that was made, includes row, col, value, and puzzle state
+ */
+Guess Sudoku::getGuessRandom()
+{
+    std::uniform_int_distribution<uint8_t> rand08(0,8);
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator (seed);
+    // guess is returned as square,value in an array of bits
+    // select random vector
+    bool squareIsEmpty = false;
+    RowCol square;
+    while (squareIsEmpty == false) {
+        square =RowCol(rand08(generator), rand08(generator));
+        if(allowableValues[square.row][square.col].count() != 0)
+            squareIsEmpty = true;
+    }
+    // select random bit
+    vector<uint8_t> vBits;
+    for (auto b : bits)
+    {
+        if (allowableValues[square.row][square.col].test(b) == true)
+        {
+            vBits.push_back(b);
+        }
+    }
+    // pick random bit
+    if(vBits.size() == 0) printf("Exception coming\n");
+    uint8_t t = vBits[rand() % vBits.size()];
+    return Guess(square, bitMask[t], puzzle, allowableValues);
+
 }
 
 /**

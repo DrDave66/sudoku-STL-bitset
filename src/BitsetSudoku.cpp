@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <random>
+#include <chrono>
 
 using std::fstream;
 using std::string;
@@ -54,27 +56,33 @@ string s3 = "6314827957921356488457692311582963744673518293298471565169734829836
 #define xSHORTMAIN
 #ifdef SHORTMAIN
 int main() {
-	Puzzles p("../../sudoku-puzzles/.txt");
+	Puzzles p("../../sudoku-puzzles/10MP.txt");
 	printf("%d puzzles loaded\n", p.getNumberOfPuzzles());
 	vector<uint32_t> puzNum;
-	string filename = "guessed.txt";
+	string filename ="../../sudoku-puzzles/9.8MP.txt";
+	uint32_t numPuzzles = p.getNumberOfPuzzles();
+	uint32_t newFilePuzzles = 0;
+
 	fstream file;
 	string str;
 	Sudoku s;
-	file.open(filename,ios::in);
-	if(file.is_open()) {
-		while(getline(file, str)) {
-			uint32_t val = atoi(str.c_str());
-			puzNum.push_back(val);
-		}
-	}
-	FILE* f = fopen("../../sudoku-puzzles/Guesses.txt","wt");
+	FILE* f = fopen("../../sudoku-puzzles/9.8MP.txt","wt");
 	if(f != NULL) {
-		for(auto v:puzNum) {
-			fprintf(f,"%s\n",p.getPuzzle(v).c_str());
+		for (int i = 0 ; i < numPuzzles ; i++) {
+			s.setPuzzle(p.getPuzzle(i));
+			s.solvePuzzle();
+			if(s.guessNumber == 0) {
+				fprintf(f,"%s\n",p.getPuzzle(i).c_str());
+				newFilePuzzles++;
+			}
+			if(i % 100000 == 0)
+				printf("%d of %d, %d to new\n",i,numPuzzles, newFilePuzzles);
 		}
 	}
 	fclose(f);
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine generator (seed);
+
 
 }
 
@@ -83,8 +91,7 @@ int main() {
 int main()
 {
 
-	Puzzles p;
-	Puzzles pf("../../sudoku-puzzles/10MP.txt");
+	Puzzles pf("../../sudoku-puzzles/9.8MP.txt");
 	cout << pf.getNumberOfPuzzles() << " puzzles loaded" << endl << endl << endl;
 	if (pf.getNumberOfPuzzles() == 0)
 		return 1;
@@ -108,8 +115,14 @@ int main()
 		ptl.stop();
 		time = ptl.elapsed();
 		if (isSolved == true)
-		{
+		{ //puzzle 7734746 needed a guess
    			solved += 1;
+			if(s.guessNumber != 0) {
+				//puzzle 7734746 needed a guess
+				//654...8.387.364.9...2.........4.26..9...574..4256.8.......8.54........212.65..3..
+				printf("puzzle %d needed a guess\n",i);
+				cout << pf.getPuzzle(i) << endl;
+			}
 		}
 		else {
 			printf("Not solved puzzle %d\n",i);
