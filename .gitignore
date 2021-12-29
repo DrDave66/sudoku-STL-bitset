@@ -1,3 +1,4 @@
-build
-XCode
+build/*
+XCode/*
 .DS_Store
+.vscode/*
