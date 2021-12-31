@@ -64,9 +64,9 @@ void Sudoku::createVectors(void)
     pushGuessCount=0;
     singleBitSetCount=0;
 	array<Guess, 81> guessList; // ordered list of guesses
-    for(Guess g:guessList) {
-        memset(&g,0,sizeof(Guess));
-    }
+    // for(Guess g:guessList) {
+    //     memset(&g,0,sizeof(Guess));
+    // }
     uint8_t i;
     for (i = 0; i < 9; i++)
     {
@@ -846,17 +846,17 @@ uint8_t Sudoku::singleBitSet(bitset<9> bs)
 void Sudoku::printCounts() {
     setlocale(LC_ALL,"");
     printf("\nSudoku counts - number of times a function was called since class creation\n");
-    printf("clearPuzzle         %'llu\n",clearPuzzleCount);
-    printf("setPuzzle           %'llu\n",setPuzzleCount);
-    printf("setValue            %'llu\n",setValueCount);
-    printf("setValueRC          %'llu\n",setValueRCCount);
-    printf("solveOnes           %'llu\n",solveOnesCount);
-    printf("isPuzzleSolved      %'llu\n",isPuzzleSolvedCount);
-    printf("startGuessingCount  %'llu\n",startGuessingCount);
-    printf("removeGuess         %'llu\n",removeGuessCount);
-    printf("guessesRemain       %'llu\n",guessesRemainCount);
-    printf("getGuess            %'llu\n",getGuessCount);
-    printf("popGuess            %'llu\n",popGuessCount);
-    printf("pushGuess           %'llu\n",pushGuessCount);
-    printf("singleBitSet        %'llu\n",singleBitSetCount);
+    printf("clearPuzzle         %lu\n",clearPuzzleCount);
+    printf("setPuzzle           %lu\n",setPuzzleCount);
+    printf("setValue            %lu\n",setValueCount);
+    printf("setValueRC          %lu\n",setValueRCCount);
+    printf("solveOnes           %lu\n",solveOnesCount);
+    printf("isPuzzleSolved      %lu\n",isPuzzleSolvedCount);
+    printf("startGuessingCount  %lu\n",startGuessingCount);
+    printf("removeGuess         %lu\n",removeGuessCount);
+    printf("guessesRemain       %lu\n",guessesRemainCount);
+    printf("getGuess            %lu\n",getGuessCount);
+    printf("popGuess            %lu\n",popGuessCount);
+    printf("pushGuess           %lu\n",pushGuessCount);
+    printf("singleBitSet        %lu\n",singleBitSetCount);
 }
