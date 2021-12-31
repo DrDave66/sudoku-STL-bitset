@@ -580,6 +580,7 @@ bool Sudoku::isPuzzleSolved(void)
     isPuzzleSolvedCount++;
     // a puzzle is solved if each unit in unitlist contains values of 1-9
     bitset<9> bs = 0; // an accumulator for the bits set
+    RowCol rc;
     for (array<RowCol, 9> ul : unitList)
     {               // for each unit in the unitlist
         bs.reset(); // clear accumulator

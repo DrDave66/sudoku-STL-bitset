@@ -91,7 +91,7 @@ int main() {
 int main()
 {
 
-	Puzzles pf("../../sudoku-puzzles/9.8MP.txt");
+	Puzzles pf("../../sudoku-puzzles/1MP.txt");
 	cout << pf.getNumberOfPuzzles() << " puzzles loaded" << endl << endl << endl;
 	if (pf.getNumberOfPuzzles() == 0)
 		return 1;
@@ -140,7 +140,7 @@ int main()
     cout << "Solved " << solved << " out of " << pf.getNumberOfPuzzles() << " puzzles\n";
 	cout << "Min time: " << minTime*1000.0 << " ms, Max time: " << maxTime*1000.0 << " ms, Average Time: " << (double)sumTime / (double)solved * 1000 << " ms, Total: " << total.elapsedString(SEC) << " sec" << endl;
 	cout << endl << endl;
-	s.printCounts();
+	//s.printCounts();
 }
 
 #endif

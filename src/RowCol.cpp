@@ -20,14 +20,12 @@ RowCol::RowCol(uint8_t r, uint8_t c) {
 RowCol::RowCol(const RowCol& rc) {
     row = rc.row;
     col = rc.col;
-
 }
 
 RowCol& RowCol::operator=(RowCol cpy) {
-//    std::swap(*this, cpy);  // trade our resources for cpy's
     row = cpy.row;
     col = cpy.col;
-    return *this;    // our (old) resources get destroyed with cpyb
+    return *this;
 }
 
 void RowCol::set(uint8_t r, uint8_t c) {
