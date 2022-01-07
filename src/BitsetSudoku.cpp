@@ -91,7 +91,7 @@ int main() {
 int main()
 {
 
-	Puzzles pf("../../sudoku-puzzles/1MP.txt");
+	Puzzles pf("../../sudoku-puzzles/9.8MP.txt");
 	cout << pf.getNumberOfPuzzles() << " puzzles loaded" << endl << endl << endl;
 	if (pf.getNumberOfPuzzles() == 0)
 		return 1;
@@ -106,6 +106,7 @@ int main()
 	double time;
 	total.start();
 	bool isSolved;
+	uint32_t neededGuess = 0;
 	uint32_t onePercent = (uint32_t)(pf.getNumberOfPuzzles()/100);
 	vector<uint32_t> puzNumWithGuesses;
 	for (uint32_t i = 0; i < pf.getNumberOfPuzzles(); i++) {
@@ -118,10 +119,11 @@ int main()
 		{ //puzzle 7734746 needed a guess
    			solved += 1;
 			if(s.guessNumber != 0) {
+				neededGuess++;
 				//puzzle 7734746 needed a guess
 				//654...8.387.364.9...2.........4.26..9...574..4256.8.......8.54........212.65..3..
-				printf("puzzle %d needed a guess\n",i);
-				cout << pf.getPuzzle(i) << endl;
+				printf("puzzle %d needed %d guesses\n",i, s.guessNumber);
+				//cout << pf.getPuzzle(i) << endl;
 			}
 		}
 		else {
@@ -137,7 +139,7 @@ int main()
 		}
 	}
 	total.stop();
-    cout << "Solved " << solved << " out of " << pf.getNumberOfPuzzles() << " puzzles\n";
+    cout << "Solved " << solved << " out of " << pf.getNumberOfPuzzles() << " puzzles, " << (unsigned)neededGuess << " needed guesses\n";
 	cout << "Min time: " << minTime*1000.0 << " ms, Max time: " << maxTime*1000.0 << " ms, Average Time: " << (double)sumTime / (double)solved * 1000 << " ms, Total: " << total.elapsedString(SEC) << " sec" << endl;
 	cout << endl << endl;
 	//s.printCounts();
@@ -149,3 +151,4 @@ int main()
 // 1MP old way				Min time: 0.021334 ms, Max time: 5.1635 ms, Average Time: 0.0305412 ms, Total: 66.192528 sec
 // 1MP bit round 1 			Min time: 0.006958 ms, Max time: 12.3362 ms, Average Time: 0.00862062 ms, Total: 13.802928 sec
 // 10MP						Min time: 0.003219 ms, Max time: 68.2603 ms, Average Time: 0.0180983 ms, Total: 220.961769 sec
+// 9.8MP, no guesses		Min time: 0.003133 ms, Max time: 24.5209 ms, Average Time: 0.0120273 ms, Total: 159.231148 sec
